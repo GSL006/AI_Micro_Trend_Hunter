@@ -18,14 +18,24 @@ def cluster_embeddings(embeddings: np.ndarray, min_cluster_size=5, verbose=False
 
 def group_articles_by_cluster(articles: List[Dict], cluster_labels: np.ndarray) -> Dict[int, List[Dict]]:
     """
-    Group articles by their cluster label.
+    Group articles by their cluster label and remove duplicates by title.
     Cluster label -1 means noise (unclustered).
     """
     clusters = {}
+    seen_titles = set()
+
     for idx, label in enumerate(cluster_labels):
         if label == -1:
             continue  # skip noise
-        clusters.setdefault(label, []).append(articles[idx])
+
+        article = articles[idx]
+        title_key = article['title'].strip().lower()
+        if title_key in seen_titles:
+            continue  # skip duplicate
+        seen_titles.add(title_key)
+
+        clusters.setdefault(label, []).append(article)
+
     return clusters
 
 def time_decay_velocity_score(cluster_articles: List[Dict], tau=1200, time_window_seconds=3600, verbose=False):
@@ -47,27 +57,28 @@ def time_decay_velocity_score(cluster_articles: List[Dict], tau=1200, time_windo
 
 def extract_keywords(articles: List[Dict], top_n=5):
     """
-    Extract simple keywords from article titles using frequency.
-    Placeholder: you can replace with TF-IDF or other NLP methods.
+    Extract keywords using TF-IDF from article titles.
     """
-    from collections import Counter
-    import re
+    from sklearn.feature_extraction.text import TfidfVectorizer
 
-    words = []
-    for a in articles:
-        # Basic tokenize: split on non-alphabetic chars and lowercase
-        tokens = re.findall(r'\b[a-z]{3,}\b', a['title'].lower())
-        words.extend(tokens)
-    most_common = [w for w, _ in Counter(words).most_common(top_n)]
-    return most_common
+    titles = [a['title'] for a in articles]
+    vectorizer = TfidfVectorizer(stop_words='english', token_pattern=r'\b[a-zA-Z]{3,}\b')
+    tfidf_matrix = vectorizer.fit_transform(titles)
+    
+    summed_tfidf = tfidf_matrix.sum(axis=0)
+    scores = [(word, summed_tfidf[0, idx]) for word, idx in vectorizer.vocabulary_.items()]
+    sorted_keywords = sorted(scores, key=lambda x: x[1], reverse=True)
+    
+    manual_exclude = {'how', 'from', 'what', 'using', 'strategy'}
+    return [w for w, _ in sorted_keywords[:top_n * 2] if w not in manual_exclude][:top_n]
 
 def find_microtrends(
     clusters,
-    velocity_threshold=0.4,    # lower normalized velocity threshold
-    min_cluster_size=3,        # smaller cluster allowed
-    min_recent_articles=1,     # fewer recent articles required
+    velocity_threshold=0.4,
+    min_cluster_size=3,
+    min_recent_articles=1,
     time_window_seconds=3600,
-    tau=1800,                  # slower decay for velocity
+    tau=1800,
     verbose=True
 ) -> Dict[int, Dict]:
     """
