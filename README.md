@@ -1,7 +1,3 @@
-Sure! Here's a clear, professional, and informative README.md file for your **MicroTrendHunter** GitHub repo:
-
----
-
 # MicroTrendHunter
 
 **Real-time AI Microtrend Detection and Alert System**
