@@ -82,9 +82,9 @@ def find_microtrends(
             continue
 
         velocity = time_decay_velocity_score(articles, tau, time_window_seconds, verbose)
-        velocity_norm = velocity / recent_articles if recent_articles > 0 else 0
 
         recent_articles = sum(1 for a in articles if (now - a.get('timestamp', now)) <= time_window_seconds)
+        velocity_norm = velocity / recent_articles if recent_articles > 0 else 0
 
         if verbose:
             print(f"[Microtrend] Cluster {cluster_id} size={len(articles)} velocity={velocity:.2f} norm={velocity_norm:.2f} recent_articles={recent_articles}")
