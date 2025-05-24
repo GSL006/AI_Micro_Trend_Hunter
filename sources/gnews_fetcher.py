@@ -10,8 +10,8 @@ import json
 sys.stdout.reconfigure(encoding='utf-8')
 
 # Load .env from current file's directory
-env_path = Path(__file__).parent / '.env'
-load_dotenv(dotenv_path=env_path)
+# env_path = Path(__file__).parent / '.env'
+# load_dotenv(dotenv_path=env_path)
 
 GNEWS_API_URL = "https://gnews.io/api/v4/search"
 API_KEY = os.getenv("GNEWS_API")
