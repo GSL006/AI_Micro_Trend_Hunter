@@ -3,6 +3,11 @@ import hdbscan
 import time
 from typing import List, Dict
 
+import nltk
+nltk.download('stopwords')
+from nltk.corpus import stopwords
+from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS, TfidfVectorizer
+
 def cluster_embeddings(embeddings: np.ndarray, min_cluster_size=5, verbose=False):
     """
     Cluster embeddings using HDBSCAN and return cluster labels.
@@ -57,20 +62,20 @@ def time_decay_velocity_score(cluster_articles: List[Dict], tau=1200, time_windo
 
 def extract_keywords(articles: List[Dict], top_n=5):
     """
-    Extract keywords using TF-IDF from article titles.
+    Extract keywords using TF-IDF from article titles,
+    combining sklearn and NLTK English stop words.
     """
-    from sklearn.feature_extraction.text import TfidfVectorizer
+    combined_stop_words = set(stopwords.words('english')).union(ENGLISH_STOP_WORDS)
 
     titles = [a['title'] for a in articles]
-    vectorizer = TfidfVectorizer(stop_words='english', token_pattern=r'\b[a-zA-Z]{3,}\b')
+    vectorizer = TfidfVectorizer(stop_words=combined_stop_words, token_pattern=r'\b[a-zA-Z]{3,}\b')
     tfidf_matrix = vectorizer.fit_transform(titles)
     
     summed_tfidf = tfidf_matrix.sum(axis=0)
     scores = [(word, summed_tfidf[0, idx]) for word, idx in vectorizer.vocabulary_.items()]
     sorted_keywords = sorted(scores, key=lambda x: x[1], reverse=True)
     
-    manual_exclude = {'how', 'from', 'what', 'using', 'strategy'}
-    return [w for w, _ in sorted_keywords[:top_n * 2] if w not in manual_exclude][:top_n]
+    return [w for w, _ in sorted_keywords[:top_n]]
 
 def find_microtrends(
     clusters,
