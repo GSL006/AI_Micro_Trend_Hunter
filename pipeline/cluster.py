@@ -62,13 +62,12 @@ def time_decay_velocity_score(cluster_articles: List[Dict], tau=1200, time_windo
 
 def extract_keywords(articles: List[Dict], top_n=5):
     """
-    Extract keywords using TF-IDF from article titles,
-    combining sklearn and NLTK English stop words.
+    Extract keywords using TF-IDF from article titles.
     """
-    combined_stop_words = set(stopwords.words('english')).union(ENGLISH_STOP_WORDS)
+    from sklearn.feature_extraction.text import TfidfVectorizer
 
     titles = [a['title'] for a in articles]
-    vectorizer = TfidfVectorizer(stop_words=combined_stop_words, token_pattern=r'\b[a-zA-Z]{3,}\b')
+    vectorizer = TfidfVectorizer(stop_words='english', token_pattern=r'\b[a-zA-Z]{3,}\b')
     tfidf_matrix = vectorizer.fit_transform(titles)
     
     summed_tfidf = tfidf_matrix.sum(axis=0)
