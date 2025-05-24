@@ -1,0 +1,7 @@
+numpy
+requests
+hdbscan
+nltk
+python-dotenv
+tqdm
+sentence-transformers
