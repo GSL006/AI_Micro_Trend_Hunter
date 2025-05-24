@@ -4,11 +4,15 @@ on:
   schedule:
     # runs every hour at minute 0
     - cron: '0 * * * *'
-  workflow_dispatch: # manual trigger option
+  workflow_dispatch:  # manual trigger option
 
 jobs:
   run_microtrend:
     runs-on: ubuntu-latest
+    env:
+      GNEWS_API: ${{ secrets.GNEWS_API }}
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
 
     steps:
       - name: Checkout repo
@@ -17,15 +21,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'  # or your preferred version
-
-      - name: Cache pip
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
+          python-version: '3.10'
 
       - name: Install dependencies
         run: |
