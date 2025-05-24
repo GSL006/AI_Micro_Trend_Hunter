@@ -62,13 +62,13 @@ def extract_keywords(articles: List[Dict], top_n=5):
     return most_common
 
 def find_microtrends(
-    clusters: Dict[int, List[Dict]],
-    velocity_threshold=1.5,         # normalized velocity threshold
-    min_cluster_size=5,             # minimal cluster size
-    min_recent_articles=3,          # minimal fresh article count
+    clusters,
+    velocity_threshold=0.4,    # lower normalized velocity threshold
+    min_cluster_size=3,        # smaller cluster allowed
+    min_recent_articles=2,     # fewer recent articles required
     time_window_seconds=3600,
-    tau=1200,                      # decay parameter for velocity
-    verbose=False
+    tau=1800,                  # slower decay for velocity
+    verbose=True
 ) -> Dict[int, Dict]:
     """
     Return clusters that satisfy stricter microtrend conditions.
