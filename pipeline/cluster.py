@@ -65,7 +65,7 @@ def find_microtrends(
     clusters,
     velocity_threshold=0.4,    # lower normalized velocity threshold
     min_cluster_size=3,        # smaller cluster allowed
-    min_recent_articles=2,     # fewer recent articles required
+    min_recent_articles=1,     # fewer recent articles required
     time_window_seconds=3600,
     tau=1800,                  # slower decay for velocity
     verbose=True
