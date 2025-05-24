@@ -59,7 +59,7 @@ def main():
     print("Detecting microtrends...")
     microtrends = cluster.find_microtrends(
         clusters,
-        velocity_threshold=0.4,     # allow velocity_norm >= 0.4 (40% "freshness")
+        velocity_threshold=0.3,     # allow velocity_norm >= 0.3 (30% "freshness")
         time_window_seconds=3600,   # last 1 hour articles considered recent
         min_cluster_size=3,         # clusters at least size 3
         min_recent_articles=1,      # at least 2 recent articles
