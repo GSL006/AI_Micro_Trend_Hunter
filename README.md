@@ -35,11 +35,11 @@ It analyzes article velocity and freshness to surface trends early, helping you 
 
 ## How It Works
 
-1. **Fetch articles**: Pulls recent AI-related articles every hour using APIs like GNews.
-2. **Embed & cluster**: Converts article titles/text to embeddings and clusters them with HDBSCAN.
+1. **Fetch articles**: Pulls recent AI-related articles every hour using Gnews and HackerNews APIs.
+2. **Embed & cluster**: Converts article full text and titles to embeddings and clusters them with HDBSCAN.
 3. **Compute velocity**: Scores clusters by recency-weighted article velocity (exponential decay).
 4. **Filter microtrends**: Clusters with minimum size, fresh article count, and velocity threshold are flagged as microtrends.
-5. **Send alerts**: Posts detected microtrends summaries to a Telegram channel in real-time.
+5. **Send alerts**: Posts detected microtrend clusters to a Telegram channel in real-time which contains the link to each article in the cluster.
 
 ---
 
