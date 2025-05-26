@@ -78,7 +78,7 @@ def extract_keywords(articles: List[Dict], top_n=5):
 
 def find_microtrends(
     clusters,
-    velocity_threshold=0.3,
+    velocity_threshold=0.5,
     min_cluster_size=3,
     min_recent_articles=1,
     time_window_seconds=3600,
